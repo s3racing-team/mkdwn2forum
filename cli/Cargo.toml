@@ -1,0 +1,13 @@
+[package]
+name = "mkdwn2forum_cli"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+doc = false
+name = "mkdwn2forum"
+path = "src/main.rs"
+
+[dependencies]
+mkdwn2forum = { path = "../mkdwn2forum" }
+clipboard = "0.5.0"
