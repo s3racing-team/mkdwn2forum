@@ -635,7 +635,7 @@ async function __wbg_init(input) {
     if (wasm !== undefined) return wasm;
 
     if (typeof input === 'undefined') {
-        input = new URL('mkdwn2forum_web-6ce1ac3fc15dad44_bg.wasm', import.meta.url);
+        input = new URL('mkdwn2forum_web-ffbe56584bb51329_bg.wasm', import.meta.url);
     }
     const imports = __wbg_get_imports();
 
