@@ -1,0 +1,9 @@
+[package]
+name = "mkdwn2forum_web"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+mkdwn2forum = { path = "../mkdwn2forum" }
+yew = { version = "0.20", features = ["csr"] }
+web-sys = "0.3.64"

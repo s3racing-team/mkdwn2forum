@@ -2,4 +2,5 @@
 members = [
 "mkdwn2forum",
 "cli",
+"web"
 ]
