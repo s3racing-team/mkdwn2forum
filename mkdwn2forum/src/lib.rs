@@ -1,3 +1,5 @@
+use std::fmt::Write as _;
+
 pub fn convert(input: &str) -> String {
     let mut output = String::new();
     let mut list_depth = 0;
@@ -40,7 +42,7 @@ pub fn convert(input: &str) -> String {
                 }
 
                 output.push_str("[*]");
-                output.push_str(line[1..].trim());
+                push_text(&mut output, line[1..].trim());
                 output.push('\n');
             }
             ' ' => {
@@ -51,46 +53,43 @@ pub fn convert(input: &str) -> String {
                     indent += 1;
                 }
 
-                match chars.peek() {
-                    Some('-') => {
-                        if indent % 4 != 0 {
-                            // TODO: warning
-                        }
-                        let calc_depth = (indent / 4) + 1;
-                        let new_list_depth = if calc_depth > list_depth + 1 {
-                            // TODO: warning
-                            list_depth + 1
-                        } else {
-                            calc_depth
-                        };
+                let Some('-') = chars.peek() else {
+                    push_text(&mut output, line);
+                    output.push('\n');
+                    continue;
+                };
 
-                        let start_new_list = new_list_depth > list_depth;
-                        close_prev_lists(&mut output, &mut list_depth, new_list_depth);
-
-                        if start_new_list {
-                            for _ in 0..(new_list_depth - 1) {
-                                output.push_str("    ");
-                            }
-                            output.push_str("[list]\n");
-                        }
-
-                        for _ in 0..(new_list_depth - 1) {
-                            output.push_str("    ");
-                        }
-                        output.push_str("[*]");
-                        let text_start = indent as usize + 1;
-                        output.push_str(line[text_start..].trim());
-                        output.push('\n');
-                    }
-                    _ => {
-                        output.push_str(line);
-                        output.push('\n');
-                        continue;
-                    }
+                if indent % 4 != 0 {
+                    // TODO: warning
                 }
+                let calc_depth = (indent / 4) + 1;
+                let new_list_depth = if calc_depth > list_depth + 1 {
+                    // TODO: warning
+                    list_depth + 1
+                } else {
+                    calc_depth
+                };
+
+                let start_new_list = new_list_depth > list_depth;
+                close_prev_lists(&mut output, &mut list_depth, new_list_depth);
+
+                if start_new_list {
+                    for _ in 0..(new_list_depth - 1) {
+                        output.push_str("    ");
+                    }
+                    output.push_str("[list]\n");
+                }
+
+                for _ in 0..(new_list_depth - 1) {
+                    output.push_str("    ");
+                }
+                output.push_str("[*]");
+                let text_start = indent as usize + 1;
+                push_text(&mut output, line[text_start..].trim());
+                output.push('\n');
             }
             _ => {
-                output.push_str(line);
+                push_text(&mut output, line);
                 output.push('\n');
             }
         }
@@ -109,4 +108,65 @@ fn close_prev_lists(output: &mut String, list_depth: &mut u16, new_list_depth: u
         output.push_str("[/list]\n");
     }
     *list_depth = new_list_depth;
+}
+
+fn push_text(output: &mut String, line: &str) {
+    let mut chars = line.char_indices().peekable();
+    let mut pos = 0;
+    'outer: loop {
+        let Some((i, c)) = chars.next() else { break };
+
+        match c {
+            '[' => {
+                let link_text_start = i + 1;
+                let link_text_end = loop {
+                    let Some((i, c)) = chars.next() else {
+                        break 'outer;
+                    };
+
+                    if c == ']' {
+                        break i;
+                    }
+                };
+
+                // eat spaces
+                while let Some((_, ' ')) = chars.peek() {
+                    chars.next();
+                }
+
+                let link_url_start = match chars.peek() {
+                    Some(&(i, '(')) => {
+                        chars.next();
+                        i + 1
+                    }
+                    Some(&(i, _)) => {
+                        output.push_str(&line[pos..i]);
+                        pos = i;
+                        continue;
+                    }
+                    None => break,
+                };
+
+                let link_url_end = loop {
+                    let Some((i, c)) = chars.next() else { break 'outer };
+
+                    if c == ')' {
+                        break i;
+                    }
+                };
+
+                let link_text = line[link_text_start..link_text_end].trim();
+                let link_url = line[link_url_start..link_url_end].trim();
+                write!(output, "[url={link_url}]{link_text}[/url]").ok();
+
+                pos = link_url_end + 1;
+            }
+            _ => {
+                output.push(c);
+                pos = i + 1;
+            }
+        }
+    }
+
+    output.push_str(&line[pos..]);
 }
