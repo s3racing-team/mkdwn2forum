@@ -29,8 +29,15 @@ textarea:focus {
 
 .container {
     display: flex;
+    flex-direction: row;
     margin: 4px;
     height: calc(100vh - 8px);
+}
+
+@media (max-width: 800px) {
+  .container {
+    flex-direction: column;
+  }
 }
 
 .left, .right {
