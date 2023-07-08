@@ -32,7 +32,7 @@ fn app() -> Html {
 
     html! {
         <div class="container">
-            <textarea class="left" oninput={on_text_input} />
+            <textarea class="left" oninput={on_text_input} placeholder="# This is a heading\n## This is a subheading\n[Here goes the link text](https://here-goes-the-url.com)\n<https://this-is-a-plain-url.com>\n\n- here\n- is\n- a\n- list\n\n1. And\n2. this\n3. is\n4. a\n5. numbered\n6. list\n" />
             <textarea class="right" value={output.to_string()} readonly=true />
             <button class="copy_button" onclick={copy_text}>
                 <svg class="copy_icon" xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512">
