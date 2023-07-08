@@ -22,7 +22,7 @@ fn app() -> Html {
     html! {
         <div class="container">
             <textarea class="left" oninput={on_text_input} />
-            <textarea value={output.to_string()} class="right" readonly=true />
+            <textarea class="right" value={output.to_string()} readonly=true />
         </div>
     }
 }

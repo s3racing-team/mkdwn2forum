@@ -17,12 +17,12 @@ html, body {
 .container {
     display: flex;
     margin: 4px;
+    height: calc(100vh - 8px);
 }
 
 .left, .right {
     resize: none;
     flex:1;
-    height: 96vh;
 }
 
 textarea {
