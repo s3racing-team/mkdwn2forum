@@ -10,7 +10,7 @@ pub fn convert(input: &str) -> String {
     for line in input.lines() {
         let mut chars = line.chars().peekable();
 
-        let Some(c) = chars.peek() else {
+        let Some(&c) = chars.peek() else {
             close_prev_lists(&mut output, &mut list_depth, 0);
             output.push('\n');
             continue;
@@ -48,6 +48,31 @@ pub fn convert(input: &str) -> String {
                 push_text(&mut output, line[1..].trim());
                 output.push('\n');
             }
+            '1'..='9' => {
+                chars.next();
+                let mut i = 1 + 1;
+                while let Some('0'..='9') = chars.peek() {
+                    chars.next();
+                    i += 1;
+                }
+                let Some('.') = chars.next() else {
+                    close_prev_lists(&mut output, &mut list_depth, 0);
+                    push_text(&mut output, line);
+                    output.push('\n');
+                    continue;
+                };
+
+                let in_list = list_depth > 0;
+                close_prev_lists(&mut output, &mut list_depth, 1);
+
+                if !in_list {
+                    output.push_str("[list=1]\n");
+                }
+
+                output.push_str("[*]");
+                push_text(&mut output, line[i..].trim());
+                output.push('\n');
+            }
             ' ' => {
                 chars.next();
                 let mut indent = 1;
@@ -56,40 +81,86 @@ pub fn convert(input: &str) -> String {
                     indent += 1;
                 }
 
-                let Some('-') = chars.peek() else {
-                    push_text(&mut output, line);
-                    output.push('\n');
-                    continue;
-                };
+                match chars.peek() {
+                    Some('-') => {
+                        if indent % 4 != 0 {
+                            // TODO: warning
+                        }
+                        let calc_depth = (indent / 4) + 1;
+                        let new_list_depth = if calc_depth > list_depth + 1 {
+                            // TODO: warning
+                            list_depth + 1
+                        } else {
+                            calc_depth
+                        };
 
-                if indent % 4 != 0 {
-                    // TODO: warning
-                }
-                let calc_depth = (indent / 4) + 1;
-                let new_list_depth = if calc_depth > list_depth + 1 {
-                    // TODO: warning
-                    list_depth + 1
-                } else {
-                    calc_depth
-                };
+                        let start_new_list = new_list_depth > list_depth;
+                        close_prev_lists(&mut output, &mut list_depth, new_list_depth);
 
-                let start_new_list = new_list_depth > list_depth;
-                close_prev_lists(&mut output, &mut list_depth, new_list_depth);
+                        if start_new_list {
+                            for _ in 0..(new_list_depth - 1) {
+                                output.push_str("    ");
+                            }
+                            output.push_str("[list]\n");
+                        }
 
-                if start_new_list {
-                    for _ in 0..(new_list_depth - 1) {
-                        output.push_str("    ");
+                        for _ in 0..(new_list_depth - 1) {
+                            output.push_str("    ");
+                        }
+                        output.push_str("[*]");
+                        let text_start = indent as usize + 1;
+                        push_text(&mut output, line[text_start..].trim());
+                        output.push('\n');
                     }
-                    output.push_str("[list]\n");
-                }
+                    Some('1'..='9') => {
+                        chars.next();
+                        let mut i = 1 + 1;
+                        while let Some('0'..='9') = chars.peek() {
+                            chars.next();
+                            i += 1;
+                        }
+                        let Some('.') = chars.next() else {
+                            close_prev_lists(&mut output, &mut list_depth, 0);
+                            push_text(&mut output, line);
+                            output.push('\n');
+                            continue;
+                        };
 
-                for _ in 0..(new_list_depth - 1) {
-                    output.push_str("    ");
+                        if indent % 4 != 0 {
+                            // TODO: warning
+                        }
+                        let calc_depth = (indent / 4) + 1;
+                        let new_list_depth = if calc_depth > list_depth + 1 {
+                            // TODO: warning
+                            list_depth + 1
+                        } else {
+                            calc_depth
+                        };
+
+                        let start_new_list = new_list_depth > list_depth;
+                        close_prev_lists(&mut output, &mut list_depth, new_list_depth);
+
+                        if start_new_list {
+                            for _ in 0..(new_list_depth - 1) {
+                                output.push_str("    ");
+                            }
+                            output.push_str("[list=1]\n");
+                        }
+
+                        for _ in 0..(new_list_depth - 1) {
+                            output.push_str("    ");
+                        }
+                        output.push_str("[*]");
+                        let text_start = indent as usize + i;
+                        push_text(&mut output, line[text_start..].trim());
+                        output.push('\n');
+                    }
+                    _ => {
+                        push_text(&mut output, line);
+                        output.push('\n');
+                        continue;
+                    }
                 }
-                output.push_str("[*]");
-                let text_start = indent as usize + 1;
-                push_text(&mut output, line[text_start..].trim());
-                output.push('\n');
             }
             _ => {
                 push_text(&mut output, line);

@@ -53,6 +53,48 @@ fn nested_list() {
 }
 
 #[test]
+fn numbered_list() {
+    check(
+        "
+1. a
+2. b
+3. c
+",
+        "
+[list=1]
+[*]a
+[*]b
+[*]c
+[/list]
+",
+    );
+}
+
+#[test]
+fn nested_numbered_list() {
+    check(
+        "
+- a
+    2. a1
+    3. a2
+- b
+- c
+",
+        "
+[list]
+[*]a
+    [list=1]
+    [*]a1
+    [*]a2
+    [/list]
+[*]b
+[*]c
+[/list]
+",
+    );
+}
+
+#[test]
 fn url_with_alt_text() {
     check(
         "Click this [ link ](https://pointerpointer.com) now\n",
