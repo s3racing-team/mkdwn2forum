@@ -62,13 +62,15 @@ fn app() -> Html {
 
     html! {
         <div class="container">
-            <textarea class="left" oninput={on_text_input} placeholder={markdown_placeholder} />
-            <textarea class="right" value={output.to_string()} readonly=true placeholder={forum_placeholder} />
-            <button class="copy_button" onclick={copy_text}>
-                <svg class="copy_icon" xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512">
-                    <path d="M272 0H396.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H272c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128H192v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/>
-                </svg>
-            </button>
+            <textarea class="input" oninput={on_text_input} placeholder={markdown_placeholder} />
+            <div class="output-container">
+                <textarea class="output" value={output.to_string()} readonly=true placeholder={forum_placeholder} />
+                <button class="copy_button" onclick={copy_text}>
+                    <svg class="copy_icon" xmlns="http://www.w3.org/2000/svg" height="1.5em" viewBox="0 0 512 512">
+                        <path d="M272 0H396.1c12.7 0 24.9 5.1 33.9 14.1l67.9 67.9c9 9 14.1 21.2 14.1 33.9V336c0 26.5-21.5 48-48 48H272c-26.5 0-48-21.5-48-48V48c0-26.5 21.5-48 48-48zM48 128H192v64H64V448H256V416h64v48c0 26.5-21.5 48-48 48H48c-26.5 0-48-21.5-48-48V176c0-26.5 21.5-48 48-48z"/>
+                    </svg>
+                </button>
+            </div>
         </div>
     }
 }

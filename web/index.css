@@ -24,16 +24,35 @@ textarea {
 
 textarea:focus {
     outline:none;
-    background-color: #242424;
+    background-color: #212121;
 }
 
 .container {
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
     margin: 4px;
     height: calc(100vh - 8px);
 }
 
-.left, .right {
+@media (orientation: portrait) {
+  .container {
+    flex-direction: column;
+  }
+}
+
+.input {
+    resize: none;
+    flex:1;
+}
+
+.output-container {
+    position: relative;
+    flex:1;
+    display: flex;
+}
+
+.output {
     resize: none;
     flex:1;
 }
@@ -54,10 +73,18 @@ textarea:focus {
     border: 2px solid #808080;
 }
 
+.copy_button:active {
+    border: 2px solid #484848;
+}
+
 .copy_icon {
     fill: #606060;
 }
 
 .copy_button:hover .copy_icon {
     fill: #808080;
+}
+
+.copy_button:active .copy_icon {
+    fill: #484848;
 }
