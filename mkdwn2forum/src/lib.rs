@@ -1,5 +1,8 @@
 use std::fmt::Write as _;
 
+#[cfg(test)]
+mod test;
+
 pub fn convert(input: &str) -> String {
     let mut output = String::new();
     let mut list_depth = 0;
@@ -158,6 +161,23 @@ fn push_text(output: &mut String, line: &str) {
                 let link_text = line[link_text_start..link_text_end].trim();
                 let link_url = line[link_url_start..link_url_end].trim();
                 write!(output, "[url={link_url}]{link_text}[/url]").ok();
+
+                pos = link_url_end + 1;
+            }
+            '<' => {
+                let link_url_start = i + 1;
+                let link_url_end = loop {
+                    let Some((i, c)) = chars.next() else {
+                        break 'outer;
+                    };
+
+                    if c == '>' {
+                        break i;
+                    }
+                };
+
+                let link_url = line[link_url_start..link_url_end].trim();
+                write!(output, "[url]{link_url}[/url]").ok();
 
                 pos = link_url_end + 1;
             }
