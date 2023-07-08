@@ -53,6 +53,7 @@ textarea:focus {
 }
 
 .output {
+    resize: none;
     flex:1;
 }
 
