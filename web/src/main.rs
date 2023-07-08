@@ -49,6 +49,14 @@ fn app() -> Html {
 4. a
 5. numbered
 6. list
+
+- Hey
+    - look
+    - we
+        - can
+        - even
+    -indent
+- items
 ";
     let forum_placeholder = mkdwn2forum::convert(markdown_placeholder);
 
