@@ -6,4 +6,4 @@ edition = "2021"
 [dependencies]
 mkdwn2forum = { path = "../mkdwn2forum" }
 yew = { version = "0.20", features = ["csr"] }
-web-sys = "0.3.64"
+web-sys = { version = "0.3.64", features = ["Window", "Navigator", "Clipboard"] }
