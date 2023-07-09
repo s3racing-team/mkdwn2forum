@@ -7,7 +7,8 @@ pub fn convert(input: &str) -> String {
     let mut output = String::new();
     let mut list_depth = 0;
 
-    for line in input.lines() {
+    let mut lines = input.lines();
+    'outer: while let Some(line) = lines.next() {
         let mut chars = line.chars().peekable();
 
         let Some(&c) = chars.peek() else {
@@ -36,6 +37,31 @@ pub fn convert(input: &str) -> String {
                 }
                 output.push_str(line[num_heading..].trim());
                 output.push_str("[/size]\n");
+            }
+            '`' => {
+                if !line.starts_with("```") {
+                    close_prev_lists(&mut output, &mut list_depth, 0);
+                    push_text(&mut output, line);
+                    output.push('\n');
+                    continue;
+                }
+
+                output.push_str("[code]\n");
+
+                loop {
+                    let Some(line) = lines.next() else {
+                        // TODO: warning, unclosed code block
+                        output.push_str("[/code]\n");
+                        break 'outer;
+                    };
+
+                    if line.starts_with("```") {
+                        output.push_str("[/code]\n");
+                        break;
+                    } else {
+                        writeln!(output, "{line}").ok();
+                    }
+                }
             }
             '-' => {
                 chars.next();

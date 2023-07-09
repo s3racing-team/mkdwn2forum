@@ -97,6 +97,45 @@ fn nested_numbered_list() {
 }
 
 #[test]
+fn code_block() {
+    check(
+        "\
+```
+fn main() {
+    println!(\"hello world]\");
+}
+```
+",
+        "\
+[code]
+fn main() {
+    println!(\"hello world]\");
+}
+[/code]
+",
+    )
+}
+
+#[test]
+fn unclosed_code_block() {
+    check(
+        "\
+```
+fn main() {
+    println!(\"hello world]\");
+}
+",
+        "\
+[code]
+fn main() {
+    println!(\"hello world]\");
+}
+[/code]
+",
+    )
+}
+
+#[test]
 fn url_with_alt_text() {
     check(
         "Click this [ link ](https://pointerpointer.com) now\n",

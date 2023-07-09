@@ -43,6 +43,12 @@ _And this will be underlined_
 [Here goes the link text](https://here-goes-the-url.com)
 <https://this-is-a-plain-url.com>
 
+```py
+# were inside a code block
+for i in range(0, 25):
+    print(i**2)
+```
+
 - here
 - is
 - a
