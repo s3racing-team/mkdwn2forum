@@ -295,6 +295,23 @@ fn push_text(output: &mut String, line: &str) {
                     write!(output, "[i]{text}[/i]").ok();
                 }
             }
+            '_' => {
+                let text_start = i + 1;
+                let text_end = loop {
+                    let Some((i, c)) = chars.next() else {
+                        break 'outer;
+                    };
+
+                    if c == '_' {
+                        break i;
+                    }
+                };
+
+                let text = line[text_start..text_end].trim();
+                write!(output, "[u]{text}[/u]").ok();
+
+                pos = text_end + 1;
+            }
             _ => {
                 output.push(c);
                 pos = i + 1;

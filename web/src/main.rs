@@ -31,12 +31,14 @@ fn app() -> Html {
     };
 
     let markdown_placeholder = "\
-# This is a heading
-
-## This is a subheading
+# Heading 1
+## Heading 2
+### Heading 3
+#### Heading 4
 
 **This will be bold**
-*And this is italic*
+*This is italic*
+_And this will be underlined_
 
 [Here goes the link text](https://here-goes-the-url.com)
 <https://this-is-a-plain-url.com>

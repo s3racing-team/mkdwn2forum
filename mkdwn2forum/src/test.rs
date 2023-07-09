@@ -132,3 +132,11 @@ fn italic() {
         "What are they [i]doin[/i] ova der\n",
     );
 }
+
+#[test]
+fn underlined() {
+    check(
+        "Some _underlined text_, hmmm\n",
+        "Some [u]underlined text[/u], hmmm\n",
+    );
+}
