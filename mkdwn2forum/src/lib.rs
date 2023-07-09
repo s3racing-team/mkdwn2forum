@@ -254,6 +254,47 @@ fn push_text(output: &mut String, line: &str) {
 
                 pos = link_url_end + 1;
             }
+            '*' => {
+                let (bold, text_start) = match chars.peek() {
+                    Some((_, '*')) => {
+                        chars.next();
+                        (true, i + 2)
+                    }
+                    Some(_) => (false, i + 1),
+                    None => break 'outer,
+                };
+
+                let text_end = loop {
+                    let Some((i, c)) = chars.next() else {
+                        break 'outer;
+                    };
+
+                    if c != '*' {
+                        continue;
+                    }
+
+                    if bold {
+                        if let Some(&(j, '*')) = chars.peek() {
+                            chars.next();
+                            pos = j + 1;
+                        } else {
+                            // TODO: warning,
+                            pos = i + 1;
+                        }
+                    } else {
+                        pos = i + 1;
+                    }
+
+                    break i;
+                };
+
+                let text = line[text_start..text_end].trim();
+                if bold {
+                    write!(output, "[b]{text}[/b]").ok();
+                } else {
+                    write!(output, "[i]{text}[/i]").ok();
+                }
+            }
             _ => {
                 output.push(c);
                 pos = i + 1;
