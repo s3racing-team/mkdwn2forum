@@ -30,6 +30,8 @@ pub fn convert(input: &str) -> String {
                 match num_heading {
                     1 => output.push_str("[size=200]"),
                     2 => output.push_str("[size=150]"),
+                    3 => output.push_str("[size=120]"),
+                    4 => output.push_str("[size=110]"),
                     _ => output.push_str("[size]"),
                 }
                 output.push_str(line[num_heading..].trim());
