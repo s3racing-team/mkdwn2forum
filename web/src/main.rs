@@ -35,6 +35,9 @@ fn app() -> Html {
 
 ## This is a subheading
 
+**This will be bold**
+*And this is italic*
+
 [Here goes the link text](https://here-goes-the-url.com)
 <https://this-is-a-plain-url.com>
 
