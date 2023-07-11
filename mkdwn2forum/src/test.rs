@@ -175,7 +175,15 @@ fn italic() {
 #[test]
 fn underlined() {
     check(
-        "Some _underlined text_, hmmm\n",
+        "Some __underlined text__, hmmm\n",
+        "Some [u]underlined text[/u], hmmm\n",
+    );
+}
+
+#[test]
+fn underlined_not_properly_closed() {
+    check(
+        "Some __underlined text_, hmmm\n",
         "Some [u]underlined text[/u], hmmm\n",
     );
 }

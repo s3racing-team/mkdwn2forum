@@ -38,7 +38,7 @@ fn app() -> Html {
 
 **This will be bold**
 *This is italic*
-_And this will be underlined_
+__And this will be underlined__
 
 [Here goes the link text](https://here-goes-the-url.com)
 <https://this-is-a-plain-url.com>
@@ -53,21 +53,14 @@ for i in range(0, 25):
 - is
 - a
 - list
+    - with
+        - indented
+    - items
 
 1. And
-2. this
-3. is
-4. a
-5. numbered
-6. list
-
-- Hey
-    - look
-    - we
-        - can
-        - even
-    -indent
-- items
+2. a
+3. numbered
+4. list
 ";
     let forum_placeholder = mkdwn2forum::convert(markdown_placeholder);
 

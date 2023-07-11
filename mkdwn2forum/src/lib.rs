@@ -322,21 +322,34 @@ fn push_text(output: &mut String, line: &str) {
                 }
             }
             '_' => {
-                let text_start = i + 1;
+                match chars.peek() {
+                    Some((_, '_')) => chars.next(),
+                    _ => continue,
+                };
+
+                let text_start = i + 2;
                 let text_end = loop {
                     let Some((i, c)) = chars.next() else {
                         break 'outer;
                     };
 
-                    if c == '_' {
-                        break i;
+                    if c != '_' {
+                        continue;
                     }
+
+                    if let Some(&(j, '_')) = chars.peek() {
+                        chars.next();
+                        pos = j + 1;
+                    } else {
+                        // TODO: warning
+                        pos = i + 1;
+                    }
+
+                    break i;
                 };
 
                 let text = line[text_start..text_end].trim();
                 write!(output, "[u]{text}[/u]").ok();
-
-                pos = text_end + 1;
             }
             _ => {
                 output.push(c);
