@@ -187,3 +187,16 @@ fn underlined_not_properly_closed() {
         "Some [u]underlined text[/u], hmmm\n",
     );
 }
+
+#[test]
+fn escapes() {
+    check(
+        "\\# This ain't no title\n",
+        "# This ain't no title\n",
+    );
+    check(
+        "This text \\*wont\\* be italic\n",
+        "This text *wont* be italic\n",
+    );
+}
+

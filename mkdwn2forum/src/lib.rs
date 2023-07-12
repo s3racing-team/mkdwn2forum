@@ -18,6 +18,10 @@ pub fn convert(input: &str) -> String {
         };
 
         match c {
+            '\\' => {
+                push_text(&mut output, line);
+                output.push('\n');
+            }
             '#' => {
                 chars.next();
                 close_prev_lists(&mut output, &mut list_depth, 0);
@@ -219,6 +223,18 @@ fn push_text(output: &mut String, line: &str) {
         let Some((i, c)) = chars.next() else { break };
 
         match c {
+            '\\' => {
+                match chars.next() {
+                    Some((j, c)) => {
+                        let bytes = 4 - (c as u32).leading_zeros() / 8;
+                        let new_pos = j + bytes as usize;
+                        output.push_str(&line[pos..i]);
+                        output.push(c);
+                        pos = new_pos;
+                    }
+                    None => break,
+                };
+            }
             '[' => {
                 let link_text_start = i + 1;
                 let link_text_end = loop {
