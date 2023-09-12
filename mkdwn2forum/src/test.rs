@@ -200,3 +200,10 @@ fn escapes() {
     );
 }
 
+#[test]
+fn two_byte_unicode_character_at_line_end() {
+    check(
+        "This will cost 2€\nok?",
+        "This will cost 2€\nok?\n",
+    );
+}

@@ -226,8 +226,7 @@ fn push_text(output: &mut String, line: &str) {
             '\\' => {
                 match chars.next() {
                     Some((j, c)) => {
-                        let bytes = 4 - (c as u32).leading_zeros() / 8;
-                        let new_pos = j + bytes as usize;
+                        let new_pos = j + c.len_utf8();
                         output.push_str(&line[pos..i]);
                         output.push(c);
                         pos = new_pos;
@@ -369,7 +368,7 @@ fn push_text(output: &mut String, line: &str) {
             }
             _ => {
                 output.push(c);
-                pos = i + 1;
+                pos += c.len_utf8();
             }
         }
     }
